@@ -12,7 +12,7 @@ const EditTransaction = ({token, transaction, onUpdate}) => {
         try {
           await axios.put(
               'http://localhost:5000/transactions/${transaction.id}',
-              {amount, description, category, date},
+              {amount: parseFloat(amount), description, category, date},
               {headers: {Authorization: `Bearer ${token}`}}
           );
           onUpdate();

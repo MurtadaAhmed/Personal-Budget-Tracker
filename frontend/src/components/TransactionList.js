@@ -11,6 +11,7 @@ const TransactionList = ({token, onEdit, onDelete}) => {
                     {headers: {Authorization: `Bearer ${token}`},}
                 )
                 setTransactions(response.data)
+                console.log(response.data)
         } catch (error){
             console.log('Error fetching transactions: ' , error)}
         };
@@ -25,7 +26,7 @@ const TransactionList = ({token, onEdit, onDelete}) => {
             )
             setTransactions((prev) => prev.filter((transaction) => transaction.id !== id))
         } catch (error) {
-
+            console.log('Error deleting transaction: ', error)
         }
     }
 
@@ -38,7 +39,7 @@ const TransactionList = ({token, onEdit, onDelete}) => {
                     <li key={transaction.id}>
                         {transaction.date} - {transaction.category} - {transaction.amount}
                         <button onClick={() => onEdit(transaction)}>Edit</button>
-                        <button onClick={() => handleDelete(transaction.id)}></button>
+                        <button onClick={() => handleDelete(transaction.id)}>Delete</button>
                     </li>
                 ))}
             </ul>

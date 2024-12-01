@@ -7,7 +7,9 @@ import EditTransaction from "./components/EditTransaction";
 
 const App = () => {
   const [token, setToken] = useState(localStorage.getItem('token'));
-  const [editingTransaction, setEditingTransaction] = useState(null)
+  const [editingTransaction, setEditingTransaction] = useState(null);
+  const [refreshKey, setRefreshKey] = useState(0)
+
 
   if (!token) {
     return (
@@ -32,18 +34,22 @@ const App = () => {
               <EditTransaction
                   token={token}
                   transaction={editingTransaction}
-                  onUpdate={() => setEditingTransaction(null)}
+                  onUpdate={() => {
+                      setEditingTransaction(null);
+                      setRefreshKey((prev) => prev +1)
+                  }}
               />
           ) : (
               <>
               <AddTransaction
                   token={token}
-                  onAdd={() => {}}
+                  onAdd={() => {setRefreshKey((prev) => prev +1 )}}
               />
               <TransactionList
+              key={refreshKey}
               token={token}
               onEdit={setEditingTransaction}
-              onDelete={() => {}}
+
               />
               </>
           )

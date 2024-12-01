@@ -12,7 +12,7 @@ const AddTransaction = ({token, onAdd}) => {
         try {
             const response = await axios.post(
                 'http://localhost:5000/transactions',
-                {amount, description, category, date},
+                {amount: parseFloat(amount), description, category, date},
                 {headers: {Authorization: `Bearer ${token}`}}
             );
             onAdd(response.data)
@@ -23,6 +23,7 @@ const AddTransaction = ({token, onAdd}) => {
 
         } catch (error){
             console.log('Error adding transaction: ', error)
+            console.log(amount, description, category, date)
         }
     };
 

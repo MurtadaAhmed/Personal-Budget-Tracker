@@ -1,16 +1,18 @@
-from enum import unique
-
+import logging
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
 import os
 from flask_cors import CORS
-
 from sqlalchemy.orm import backref
 
+# Configure logging
+logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger(__name__)
+
 app = Flask(__name__)
-CORS(app)
+CORS(app, resources={r"/*": {"origins": "*"}})
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///budget.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -21,11 +23,11 @@ db = SQLAlchemy(app)
 bcrypt = Bcrypt(app)
 jwt = JWTManager(app)
 
+print("Before Classes")
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
     password = db.Column(db.String(120), nullable=False)
-
 
 class Transaction(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -39,7 +41,6 @@ class Transaction(db.Model):
 with app.app_context():
     db.create_all()
 
-
 @app.route('/register', methods=['POST'])
 def register():
     data = request.get_json()
@@ -51,23 +52,24 @@ def register():
     db.session.commit()
     return jsonify({'message': 'User created successfully'}), 201
 
-
 @app.route('/login', methods=['POST'])
 def login():
     data = request.get_json()
     user = User.query.filter_by(username=data['username']).first()
     if user and bcrypt.check_password_hash(user.password, data['password']):
-        access_token = create_access_token(identity=user.id)
+        access_token = create_access_token(identity=str(user.id))
+        print("User logged in succesfully")
         return jsonify({'access_token': access_token}), 200
     return jsonify({'message': 'Invalid credentials'}), 401
-
 
 @app.route('/transactions', methods=['GET'])
 @jwt_required()
 def get_transactions():
+    print("Getting transactions:")
     current_user_id = get_jwt_identity()
     transactions = Transaction.query.filter_by(user_id=current_user_id).all()
     return jsonify([{
+        'id': t.id,
         'amount': t.amount,
         'description': t.description,
         'category': t.category,
@@ -77,19 +79,24 @@ def get_transactions():
 @app.route('/transactions', methods=['POST'])
 @jwt_required()
 def add_transaction():
-    data = request.get_json()
-    current_user_id = get_jwt_identity()
-    new_transaction = Transaction(
-        amount=data['amount'],
-        description=data['description'],
-        category=data['category'],
-        date=data['date'],
-        user_id=current_user_id
-    )
-    db.session.add(new_transaction)
-    db.session.commit()
-    return jsonify({'message': 'Transaction added successfully'}), 201
-
+    try:
+        data = request.get_json()
+        current_user_id = get_jwt_identity()
+        logger.debug("current user id from jwt: %s", current_user_id)
+        logger.debug("current data: %s", data)
+        new_transaction = Transaction(
+            amount=data['amount'],
+            description=data['description'],
+            category=data['category'],
+            date=data['date'],
+            user_id=current_user_id
+        )
+        db.session.add(new_transaction)
+        db.session.commit()
+        return jsonify({'message': 'Transaction added successfully'}), 201
+    except Exception as e:
+        logger.error("Error: %s", str(e))
+        return jsonify({'error': str(e)}), 422
 
 @app.route('/transactions/<int:id>', methods=['PUT'])
 @jwt_required()
@@ -120,4 +127,5 @@ def delete_transaction(id):
     return jsonify({'message': 'Transaction deleted successfully'}), 200
 
 if __name__ == '__main__':
+    app.config['DEBUG'] = True
     app.run(debug=True)

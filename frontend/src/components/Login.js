@@ -10,7 +10,6 @@ const Login = ({ setToken }) => {
         try {
             const response = await axios.post('http://localhost:5000/login', {username, password});
             setToken(response.data.access_token);
-            alert('Login successdful')
         } catch (error) {
             alert('Error: '+ error.response.data.message)
         }
