@@ -38,7 +38,7 @@ const Register = () => {
         required
         />
 
-        <button type="submit">Register</button>
+        <button type="submit" className='btn btn-primary'>Register</button>
     </form>
 );
 };

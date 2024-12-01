@@ -4,6 +4,8 @@ import Login from "./components/Login";
 import TransactionList from "./components/TransactionList";
 import AddTransaction from "./components/AddTransaction";
 import EditTransaction from "./components/EditTransaction";
+import 'bootstrap/dist/css/bootstrap.min.css'
+
 
 const App = () => {
   const [token, setToken] = useState(localStorage.getItem('token'));
@@ -21,6 +23,7 @@ const App = () => {
   if (!token) {
     return (
         <div>
+          <h1>Personal Budget Tracker</h1>
           <Login setToken={setToken}/>
           <Register />
         </div>
@@ -35,7 +38,7 @@ const App = () => {
   return (
       <div>
       <h1>Welcome to Personal Budget Tracker</h1>
-          <button onClick={handleLogout}>Logout</button>
+          <button className='btn btn-info' onClick={handleLogout}>Logout</button>
 
           {editingTransaction ? (
               <EditTransaction

@@ -38,8 +38,8 @@ const TransactionList = ({token, onEdit, onDelete}) => {
                 {transactions.map((transaction) => (
                     <li key={transaction.id}>
                         {transaction.date} - {transaction.category} - {transaction.amount}
-                        <button onClick={() => onEdit(transaction)}>Edit</button>
-                        <button onClick={() => handleDelete(transaction.id)}>Delete</button>
+                        <button className='btn btn-secondary' onClick={() => onEdit(transaction)}>Edit</button>
+                        <button className='btn btn-danger'  onClick={() => handleDelete(transaction.id)}>Delete</button>
                     </li>
                 ))}
             </ul>

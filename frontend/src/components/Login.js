@@ -34,7 +34,7 @@ const Login = ({ setToken }) => {
             required
             />
 
-            <button type="submit">Login</button>
+            <button type="submit" className='btn btn-primary'>Login</button>
         </form>
     )
 };

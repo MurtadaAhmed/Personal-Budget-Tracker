@@ -56,7 +56,7 @@ const AddTransaction = ({token, onAdd}) => {
             placeholder='Date'
             required
             />
-            <button type='submit'>Add</button>
+            <button type='submit' className='btn btn-secondary'>Add</button>
         </form>
     )
 }
