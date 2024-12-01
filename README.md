@@ -1,17 +1,22 @@
 # Personal-Budget-Tracker (under develpment)
 
-## Run the backend with:
+## Install backend dependencies:
+```
+pip install -r requirements.txt
+
+```
+## Run the backend:
 ```
 python app.py
 ```
 
-## Run the frontend with:
+## Run the frontend:
 ```
 cd frontend
 npm start
 ```
 
-## access the app url with:
+## access the app url:
 ```
 http://localhost:3000/
 ```
