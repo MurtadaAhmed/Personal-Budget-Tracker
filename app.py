@@ -1,4 +1,3 @@
-
 from enum import unique
 
 from flask import Flask, request, jsonify
@@ -91,6 +90,34 @@ def add_transaction():
     db.session.commit()
     return jsonify({'message': 'Transaction added successfully'}), 201
 
+
+@app.route('/transactions/<int:id>', methods=['PUT'])
+@jwt_required()
+def update_transaction(id):
+    current_user_id = get_jwt_identity()
+    transaction = Transaction.query.filter_by(id=id, user_id=current_user_id).first()
+    if not transaction:
+        return jsonify({'message': 'Transaction not found'}), 404
+
+    data = request.get_json()
+    transaction.amount = data.get('amount', transaction.amount)
+    transaction.description = data.get('description', transaction.description)
+    transaction.category = data.get('category', transaction.category)
+    transaction.date = data.get('date', transaction.date)
+
+    db.session.commit()
+    return jsonify({'message': 'Transaction updated successfully'}), 200
+
+@app.route('/transactions/<int:id>', methods=['DELETE'])
+@jwt_required()
+def delete_transaction(id):
+    current_user_id = get_jwt_identity()
+    transaction = Transaction.query.filter_by(id=id, user_id=current_user_id).first()
+    if not transaction:
+        return jsonify({'message': 'Transaction not found'}), 404
+    db.session.delete(transaction)
+    db.session.commit()
+    return jsonify({'message': 'Transaction deleted successfully'}), 200
 
 if __name__ == '__main__':
     app.run(debug=True)
