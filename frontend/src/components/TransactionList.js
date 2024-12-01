@@ -15,7 +15,19 @@ const TransactionList = ({token, onEdit, onDelete}) => {
             console.log('Error fetching transactions: ' , error)}
         };
         fetchTransactions()
-        }, [token])
+        }, [token]);
+
+    const handleDelete = async (id) => {
+        try {
+            await axios.delete(
+                `http://localhost:5000/transactions/${id}`,
+                {headers: {Authorization: `Bearer ${token}`}}
+            )
+            setTransactions((prev) => prev.filter((transaction) => transaction.id !== id))
+        } catch (error) {
+
+        }
+    }
 
 
     return(
@@ -24,9 +36,9 @@ const TransactionList = ({token, onEdit, onDelete}) => {
             <ul>
                 {transactions.map((transaction) => (
                     <li key={transaction.id}>
-                        {transaction.date} - {transaction.categories} - {transaction.amount}
+                        {transaction.date} - {transaction.category} - {transaction.amount}
                         <button onClick={() => onEdit(transaction)}>Edit</button>
-                        <button onClick={() => onDelete(transaction.id)}></button>
+                        <button onClick={() => handleDelete(transaction.id)}></button>
                     </li>
                 ))}
             </ul>
