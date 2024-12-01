@@ -11,7 +11,7 @@ const EditTransaction = ({token, transaction, onUpdate}) => {
         e.preventDefault();
         try {
           await axios.put(
-              'http://localhost:5000/transactions/${transaction.id}',
+              `http://localhost:5000/transactions/${transaction.id}`,
               {amount: parseFloat(amount), description, category, date},
               {headers: {Authorization: `Bearer ${token}`}}
           );
