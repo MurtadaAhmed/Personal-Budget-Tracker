@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import Register from "./components/Register";
 import Login from "./components/Login";
 import TransactionList from "./components/TransactionList";
@@ -8,7 +8,14 @@ import EditTransaction from "./components/EditTransaction";
 const App = () => {
   const [token, setToken] = useState(localStorage.getItem('token'));
   const [editingTransaction, setEditingTransaction] = useState(null);
-  const [refreshKey, setRefreshKey] = useState(0)
+  const [refreshKey, setRefreshKey] = useState(0);
+
+    useEffect(() => {
+        const savedToken = localStorage.getItem('token');
+        if (savedToken) {
+            setToken(savedToken)
+        }
+    }, []);
 
 
   if (!token) {

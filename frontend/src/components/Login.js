@@ -10,6 +10,7 @@ const Login = ({ setToken }) => {
         try {
             const response = await axios.post('http://localhost:5000/login', {username, password});
             setToken(response.data.access_token);
+            localStorage.setItem('token', response.data.access_token);
         } catch (error) {
             alert('Error: '+ error.response.data.message)
         }
